@@ -1,3 +1,6 @@
+from utility import *
+
+
 class Node:
 
     def __init__( self ):
