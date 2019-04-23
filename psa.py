@@ -7,9 +7,17 @@ class Node:
         self.name = "test"
 
 
-def main():
-    print( "main" )
+def psa( filename, k ):
+
+    sequence_data = read_fasta( filename )
+    sequence = list(sequence_data)[0]
+
+    k_mers = k_mers( sequence, k )
+
+    print( k_mers )
+
 
 
 if( __name__ == "__main__" ):
-    main()
+
+    psa( "sequences/NC_004722.fasta", 50 )
