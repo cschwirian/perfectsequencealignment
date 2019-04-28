@@ -1,4 +1,4 @@
-def read_fasta( filename, text=True ):
+def read_fasta( filename, text=False ):
 
     if( text ):
         with open( filename, "rb" ) as sequence:
