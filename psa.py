@@ -8,46 +8,35 @@ class Node:
         self.children = []
 
 
-def search( root, mer ):
+def search( mer_node_list, mer ):
 
-    if( root.mer == mer ):
-        return root
-    else:
-        return search_helper( root, mer )
-
-
-def search_helper( root, mer ):
-
-    if( not root.children ):
-        return None
-
-    for child in root.children:
-        if( child.mer == mer ):
-            return child
-
-        result = search_helper( child, mer )
-        if( result != None ):
-            return result
+    for index in range( len( mer_node_list ) ):
+        if( mer_node_list[index].mer == mer ):
+            return mer_node_list[index]
 
     return None
 
 
 def tree_from_sequence( sequence, k ):
 
-    k_mers = k_mers( sequence, k )
+    mers = k_mers( sequence, k )
 
-    root = None( k_mers[0] )
+    root = Node( mers[0] )
 
-    for index in range( 1, len( k_mers ) ):
-        prev_mer = k_mers[index - 1]
-        current_mer = k_mers[index]
-        prev_node = search( root, prev_mer )
-        current_node = search( root, current_mer )
+    mer_node_list = [root]
+
+    for index in range( 1, len( mers ) ):
+        prev_mer = mers[index - 1]
+        current_mer = mers[index]
+        prev_node = search( mer_node_list, prev_mer )
+        current_node = search( mer_node_list, current_mer )
 
         if( current_node != None ):
             prev_node.children.append( current_node )
         else:
-            prev_node.children.append( Node( current_mer ) )
+            new_node = Node( current_mer )
+            prev_node.children.append( new_node )
+            mer_node_list.append( new_node )
 
     return root
 
@@ -55,34 +44,40 @@ def tree_from_sequence( sequence, k ):
 def sequence_from_tree( root ):
 
     sequence = root.mer[0:len(root.mer) - 1]
-    sequence += sequence_helper( root )
+    current_node = root
+
+    while( current_node.children ):
+        sequence += current_node.mer[-1]
+        current_node = current_node.children.pop( 0 )
+
+    sequence += current_node.mer[-1]
+
     return sequence
-
-def sequence_helper( root ):
-
-    if( not root.children ):
-        return root.name[-1]
-
-    next_node = root.children[0]
-    root.children.pop( 0 )
-
-    return root.name[-1] + sequence_helper( next_node )
 
 
 def psa( filename, k ):
 
+    print( "Reading FASTA data...", end="" )
     sequence_data = read_fasta( filename )
-    sequence = list(sequence_data)[0]
+    sequence = sequence_data[list(sequence_data)[0]]
+    print( "Done." )
 
+    print( "Assembling de Bruijn graph... ", end="" )
     root = tree_from_sequence( sequence, k )
+    print( "Done." )
+
+    print( "Assembling sequence from de Bruijn graph... ", end="" )
     assembled_sequence = sequence_from_tree( root )
+    print( "Done." )
 
-    print( sequence == assembled_sequence )
-
+    if( sequence == assembled_sequence ):
+        print( "Sequence assembled successfully." )
+    else:
+        print( "Sequence assembly failed." )
 
 
 
 
 if( __name__ == "__main__" ):
 
-    psa( "sequences/NC_004722.fasta", 50 )
+    psa( "sequences/test3.fasta", 40 )
