@@ -14,9 +14,12 @@ def read_fasta( filename, text=True ):
 
 def k_mers( sequence, k ):
 
-    mers = []
+    mer_list = []
 
-    for index in range( len( sequence ) - k + 1 ):
-        mers.append( sequence[index:index + k] )
+    for index in range( len( sequence ) ):
+        substring = sequence[index:index + k]
+        if( len( substring ) != k ):
+            break
+        mer_list.append( substring )
 
-    return mers
+    return mer_list
