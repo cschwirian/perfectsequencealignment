@@ -1,6 +1,8 @@
 from utility import *
 
 
+# Simple node to contain mer data as well as ordered list of node's children to
+# assist with assembly.
 class Node:
 
     def __init__( self, mer ):
@@ -8,6 +10,8 @@ class Node:
         self.children = []
 
 
+# Iteratively searches a list of mer nodes as recursive searching produced
+# recursion depth limit errors.
 def search( mer_node_list, mer ):
 
     for index in range( len( mer_node_list ) ):
@@ -17,6 +21,8 @@ def search( mer_node_list, mer ):
     return None
 
 
+# Builds temporary list of mer nodes to allow for iterative searching as
+# recursive searching produced recursion depth limit errors.
 def tree_from_sequence( sequence, k ):
 
     mers = k_mers( sequence, k )
@@ -41,6 +47,7 @@ def tree_from_sequence( sequence, k ):
     return root
 
 
+# Build sequence from tree iteratively.
 def sequence_from_tree( root ):
 
     sequence = root.mer[0:len(root.mer) - 1]
@@ -60,24 +67,24 @@ def psa( filename, k ):
     print( "Reading FASTA data...", end="" )
     sequence_data = read_fasta( filename )
     sequence = sequence_data[list(sequence_data)[0]]
-    print( "Done." )
+    print( "Done.", flush=True )
 
-    print( "Assembling de Bruijn graph... ", end="" )
+    print( "Assembling de Bruijn graph... ", end="", flush=True )
     root = tree_from_sequence( sequence, k )
-    print( "Done." )
+    print( "Done.", flush=True )
 
-    print( "Assembling sequence from de Bruijn graph... ", end="" )
+    print( "Assembling sequence from de Bruijn graph... ", end="", flush=True )
     assembled_sequence = sequence_from_tree( root )
-    print( "Done." )
+    print( "Done.", flush=True )
 
     if( sequence == assembled_sequence ):
-        print( "Sequence assembled successfully." )
+        print( "Sequence assembled successfully.", flush=True )
     else:
-        print( "Sequence assembly failed." )
+        print( "Sequence assembly failed.", flush=True )
 
 
 
 
 if( __name__ == "__main__" ):
 
-    psa( "sequences/test3.fasta", 40 )
+    psa( "sequences/NC_004722.fasta", 40 )
