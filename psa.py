@@ -1,4 +1,8 @@
 from utility import *
+import time
+import os
+import psutil
+import statistics
 
 
 # Simple node to contain mer data as well as ordered list of node's children to
@@ -83,8 +87,23 @@ def psa( filename, k ):
         print( "Sequence assembly failed.", flush=True )
 
 
+if __name__ == "__main__":
+    mer_size = 5
+    # for i in range(1, 5):
+    #     start = time.time()
+    #     psa( "sequences/test" + str(i) + ".fasta", mer_size )
+    #     end = time.time()
+    #     print("Iteration: test" + str(i) + ".fasta - Mer-size: " + str(mer_size) + " -  Elapsed Time(sec): " +
+    #     str(end-start))
 
+    mem_usage_list = []
 
-if( __name__ == "__main__" ):
+    process = psutil.Process(os.getpid())
 
-    psa( "sequences/NC_004722.fasta", 40 )
+    start = time.time()
+    start_mem = process.memory_info().rss
+    psa( "sequences/NC_004722.fasta", mer_size )
+    end = time.time()
+    end_mem = process.memory_info().rss
+    print("Elapsed time(sec): " + str(end-start))
+    print("Memory Usage(MB): " + str((end_mem-start_mem)/1000))  # in bytes
